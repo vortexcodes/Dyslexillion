@@ -1,0 +1,21 @@
+# Render Blueprint: the Dislexion answer checker (the game itself is static on GitHub Pages).
+services:
+  - type: web
+    name: dislexion-api
+    runtime: node
+    plan: free
+    rootDir: api
+    buildCommand: echo "no build"
+    startCommand: node server.mjs
+    healthCheckPath: /health
+    autoDeploy: true
+    domains:
+      - dislexion-api.vortex1.dev
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: ALLOWED_ORIGINS
+        value: https://dislexion.vortex1.dev,http://localhost:8080
+      # Secret: set in Render's dashboard (the same Venice key Margin and dlab use).
+      - key: VENICE_API_KEY
+        sync: false

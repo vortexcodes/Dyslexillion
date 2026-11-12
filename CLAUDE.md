@@ -12,7 +12,14 @@
 - Once the site answers, make sure HTTPS is on (Settings → Pages → Enforce HTTPS); mic/voice features need https.
 
 ## This project
-- Live at https://dislexion.vortex1.dev
+- Live at https://dislexion.vortex1.dev (GitHub Pages, static). Answer checker API at https://dislexion-api.vortex1.dev (Render).
 - `index.html`: Dislexion, an original "name a rare answer" category game (Daily + Endless). Forgiving spelling and
-  voice answers via the shared spelling engine. Category data is inlined JSON (`const CATS`), rarity points 10–100.
+  voice answers via the shared spelling engine. Category data is inlined JSON (`const CATS`): `[forms[], points, percent]`,
+  ~9,400 answers in 93 categories, generated with Venice AI (survey-style % estimates) plus hand-checked lists, then
+  cleaned by a second Venice pass. Points = 10 (≥30% say it) up to 100 (≤0.01%).
+- `api/server.mjs` + `render.yaml`: no-dependency Node service. `POST /check {q, answer}` asks Venice if an off-list answer
+  fits and estimates its %. CORS-locked to the site, 120 checks/hour/IP. Needs `VENICE_API_KEY` set in Render's dashboard.
+  Venice calls must set `disable_thinking: true` or they run out of tokens / time out.
+- From this cloud environment, Venice is reachable with `Authorization: Bearer proxy-injected`; Node needs
+  `NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt` for fetch to go through the proxy.
 - `writer.html`: Brilliant 2, the older dyslexia writing helper.

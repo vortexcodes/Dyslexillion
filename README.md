@@ -1,16 +1,20 @@
 # Dislexion
 
-A category game: name something in the category, and the less common your answer, the more points you get (10–100).
-Spelling doesn't have to be right. Live at **https://dislexion.vortex1.dev**.
+Name something in the category. The fewer people who'd say it, the more points (10–100). Spelling doesn't have to be
+right. Live at **https://dislexion.vortex1.dev**.
 
-- **Daily**: 7 categories, the same for everyone that day.
-- **Endless**: categories keep coming until you hit "End run".
-- **Forgiving spelling**: answers are matched by sound and by a typo model built for dyslexia (b/d swaps, vowel swaps,
-  doubled or missing letters). `zylophone` counts as xylophone, `swizerland` as Switzerland.
-- **Voice answers**: tap the mic and say it (Chrome, Edge, Safari).
-- **Timer**: 20, 30, 45 seconds or off. "Read it to me" reads the category aloud.
-- **Extra categories** for Endless: electronics & badges, 3D printing, code, business, school.
-- 50 categories, ~3,500 answers. Points come from how early people tend to name an answer, blended with how common the word is.
-  If a real answer is missing, "It's real — count it" accepts it (30 points) and remembers it in your browser.
+- **Daily**: 7 categories, the same for everyone that day, with a shareable result.
+- **Endless**: categories keep coming; streaks add bonus points.
+- **Forgiving spelling and voice**: answers match by sound and by a dyslexia-aware typo model (`zylophone` → xylophone).
+- **"% of people say this"**: every answer has a survey-style estimate; the reveal shows the top answers board.
+- **AI check**: answers not on the list are checked by Venice AI through a small server (`api/`), so real rare answers count.
+- 93 categories, ~9,400 answers, including optional electronics, 3D printing, code, business and school packs.
 
-Everything is one file (`index.html`), no server. `writer.html` is the older Brilliant 2 writing helper.
+## Answer checker (Render)
+
+The game is static (GitHub Pages). The AI check runs on Render so the Venice key stays secret:
+Render → New → Blueprint → this repo → enter `VENICE_API_KEY` → Apply. Then point DNS
+`dislexion-api` (CNAME, DNS only) at the service's `onrender.com` address. If the checker is down, the game still works and
+offers "Count it anyway".
+
+`writer.html` is the older Brilliant 2 writing helper.
