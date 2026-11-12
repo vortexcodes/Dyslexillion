@@ -12,4 +12,7 @@
 - Once the site answers, make sure HTTPS is on (Settings → Pages → Enforce HTTPS); mic/voice features need https.
 
 ## This project
-- App: Brilliant 2, a single file `index.html`. Live at https://dislexion.vortex1.dev
+- Live at https://dislexion.vortex1.dev
+- `index.html`: Dislexion, an original "name a rare answer" category game (Daily + Endless). Forgiving spelling and
+  voice answers via the shared spelling engine. Category data is inlined JSON (`const CATS`), rarity points 10–100.
+- `writer.html`: Brilliant 2, the older dyslexia writing helper.
