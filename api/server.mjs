@@ -30,8 +30,10 @@ async function check(q, answer) {
       messages: [{ role: "user", content:
 `Party game. The category is "Name ${q}". A player answered: "${answer}".
 The player may be dyslexic, so judge what they clearly meant, even if badly misspelled or phonetic.
-Reply with ONLY JSON: {"valid": true|false, "name": "correct spelling of what they meant", "percent": number}
-- valid: true only if it genuinely fits the category.
+Reply with ONLY JSON: {"valid": true|false, "name": "correct spelling of what they meant", "tier": 1-5, "percent": number}
+- valid: true only if it genuinely fits the category (brand names count when people would reasonably accept them).
+- tier: imagine asking people who really know this topic. 1 = almost every expert says it, 2 = common, 3 = solid pick,
+  4 = deep cut only a few experts would think of, 5 = obscure even for experts.
 - percent: estimated share of 1,000 Americans who would give this as their first answer (0.01 to 40).` }],
     }),
     signal: AbortSignal.timeout(25_000),
@@ -39,7 +41,7 @@ Reply with ONLY JSON: {"valid": true|false, "name": "correct spelling of what th
   const data = await res.json().catch(() => null);
   const text = data?.choices?.[0]?.message?.content || "";
   const json = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1));
-  const out = { valid: !!json.valid, name: String(json.name || answer).slice(0, 60), percent: Math.max(0.01, Math.min(40, Number(json.percent) || 0.5)) };
+  const out = { valid: !!json.valid, name: String(json.name || answer).slice(0, 60), tier: Math.max(1, Math.min(5, Math.round(Number(json.tier) || 3))), percent: Math.max(0.01, Math.min(40, Number(json.percent) || 0.5)) };
   if (cache.size > 5000) cache.clear();
   cache.set(k, out);
   return out;
@@ -65,4 +67,4 @@ http.createServer(async (req, res) => {
   } catch (e) {
     send(502, { error: "check failed" });
   }
-}).listen(PORT, () => console.log("dislexion checker on", PORT));
+}).listen(PORT, () => console.log("dislexion checker on", PORT, "| AI key:", KEY ? "yes" : "MISSING"));

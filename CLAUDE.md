@@ -28,11 +28,14 @@ Send `Authorization: Bearer proxy-injected`; never ask the user for these again,
 - Live at https://dislexion.vortex1.dev (GitHub Pages, static). Answer checker API at https://dislexion-api.onrender.com
   (Render service `srv-dbqu2ngu01pc7383kht0`, deploys from branch `claude/charming-ptolemy-6kkiq5`, rootDir `api`).
 - `index.html`: Dislexion, an original "name a rare answer" category game (Daily + Endless). Forgiving spelling and
-  voice answers via the shared spelling engine. Category data is inlined JSON (`const CATS`): `[forms[], points, percent]`,
-  ~9,400 answers in 93 categories, generated with Venice AI (survey-style % estimates) plus hand-checked lists, then
-  cleaned by a second Venice pass. Points = 10 (≥30% say it) up to 100 (≤0.01%).
+  voice answers via the shared spelling engine. Category data is inlined JSON (`const CATS`): `[forms[], points, percent, tier]`,
+  ~95,000 answers in 93 categories: a ~9,400-answer core (Venice survey-style % estimates + hand-checked lists) plus
+  exhaustive Venice sub-group lists (pct 0.01). Scoring is by expert tier, not linear %: tier 1 Obvious 5-12, 2 Common 15-30,
+  3 Solid pick 35-55, 4 Deep cut 60-80, 5 Expert level 85-100 (lower % = higher inside the range). Core answers are tiered by
+  Venice ("how likely is someone who knows the topic to say it"); long-tail extras by wordfreq Zipf (≥3.5→3, ≥2→4, else 5).
+  Pipeline scripts (expand/refill/merge/tier/build) were run from the session scratchpad; Venice 502s on bursts, keep ≤3 concurrent.
 - `api/server.mjs` + `render.yaml`: no-dependency Node service. `POST /check {q, answer}` asks Venice if an off-list answer
-  fits and estimates its %. CORS-locked to the site, 120 checks/hour/IP. Gets `VENICE_API_KEY` from the `vortex-keys` env group.
+  fits and returns its % and expert tier (1-5). CORS-locked to the site, 120 checks/hour/IP. Gets `VENICE_API_KEY` from the `vortex-keys` env group.
   Venice calls must set `disable_thinking: true` or they run out of tokens / time out.
 - From this cloud environment, Venice is reachable with `Authorization: Bearer proxy-injected`; Node needs
   `NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt` for fetch to go through the proxy.
